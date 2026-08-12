@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.TipoItemMapper">
+
+    <resultMap type="TipoItem" id="TipoItemResult">
+        <id property="ID" column="id"/>
+        <result property="descripcion" column="descripcion"/>
+    </resultMap>
+
+    <select id="getTiposItems" resultMap="TipoItemResult">
+        select id, descripcion
+        from VI_TIPOITEM
+    </select>
+
+    <select id="getTipoItem" parameterType="map" resultMap="TipoItemResult">
+        select id, descripcion
+        from VI_TIPOITEM
+        where id = #{id}
+    </select>
+
+    <insert id="addTipoItem" parameterType="map">
+        insert into VI_TIPOITEM (id, descripcion)
+        values ((select coalesce(max(id), 0) + 1 from VI_TIPOITEM), #{descripcion})
+    </insert>
+
+</mapper>

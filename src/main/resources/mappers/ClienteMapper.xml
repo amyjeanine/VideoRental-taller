@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ClienteMapper">
+
+    <resultMap type="Cliente" id="ClienteResult">
+        <id property="documento" column="c_documento"/>
+        <result property="nombre" column="c_nombre"/>
+        <result property="telefono" column="c_telefono"/>
+        <result property="direccion" column="c_direccion"/>
+        <result property="email" column="c_email"/>
+        <result property="vetado" column="c_vetado"/>
+        <collection property="rentados" ofType="ItemRentado" resultMap="ItemRentadoResult" columnPrefix="ir_"/>
+    </resultMap>
+
+    <resultMap type="ItemRentado" id="ItemRentadoResult">
+        <id property="id" column="id"/>
+        <result property="fechainiciorenta" column="fechainiciorenta"
+                typeHandler="edu.unisabana.dyas.sampleprj.dao.mybatis.typehandlers.SqlDateAsTextTypeHandler"/>
+        <result property="fechafinrenta" column="fechafinrenta"
+                typeHandler="edu.unisabana.dyas.sampleprj.dao.mybatis.typehandlers.SqlDateAsTextTypeHandler"/>
+        <association property="item" javaType="Item"
+                     resultMap="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemMapper.ItemResult"
+                     columnPrefix="item_"/>
+    </resultMap>
+
+    <select id="consultarClientes" resultMap="ClienteResult">
+        select
+            c.nombre as c_nombre,
+            c.documento as c_documento,
+            c.telefono as c_telefono,
+            c.direccion as c_direccion,
+            c.email as c_email,
+            c.vetado as c_vetado,
+            ir.id as ir_id,
+            ir.fechainiciorenta as ir_fechainiciorenta,
+            ir.fechafinrenta as ir_fechafinrenta,
+            i.id as ir_item_id,
+            i.nombre as ir_item_nombre,
+            i.descripcion as ir_item_descripcion,
+            i.fechalanzamiento as ir_item_fechalanzamiento,
+            i.tarifaxdia as ir_item_tarifaxdia,
+            i.formatorenta as ir_item_formatorenta,
+            i.genero as ir_item_genero,
+            ti.id as ir_item_tipo_id,
+            ti.descripcion as ir_item_tipo_descripcion
+        from VI_CLIENTES as c
+        left join VI_ITEMRENTADO as ir on c.documento = ir.CLIENTES_documento
+        left join VI_ITEMS as i on ir.ITEMS_id = i.id
+        left join VI_TIPOITEM as ti on i.TIPOITEM_id = ti.id
+    </select>
+
+    <select id="consultarCliente" parameterType="map" resultMap="ClienteResult">
+        select
+            c.nombre as c_nombre,
+            c.documento as c_documento,
+            c.telefono as c_telefono,
+            c.direccion as c_direccion,
+            c.email as c_email,
+            c.vetado as c_vetado,
+            ir.id as ir_id,
+            ir.fechainiciorenta as ir_fechainiciorenta,
+            ir.fechafinrenta as ir_fechafinrenta,
+            i.id as ir_item_id,
+            i.nombre as ir_item_nombre,
+            i.descripcion as ir_item_descripcion,
+            i.fechalanzamiento as ir_item_fechalanzamiento,
+            i.tarifaxdia as ir_item_tarifaxdia,
+            i.formatorenta as ir_item_formatorenta,
+            i.genero as ir_item_genero,
+            ti.id as ir_item_tipo_id,
+            ti.descripcion as ir_item_tipo_descripcion
+        from VI_CLIENTES as c
+        left join VI_ITEMRENTADO as ir on c.documento = ir.CLIENTES_documento
+        left join VI_ITEMS as i on ir.ITEMS_id = i.id
+        left join VI_TIPOITEM as ti on i.TIPOITEM_id = ti.id
+        where c.documento = #{idcli}
+    </select>
+
+    <insert id="agregarItemRentadoACliente" parameterType="map">
+        insert into VI_ITEMRENTADO (CLIENTES_documento, ITEMS_id, fechainiciorenta, fechafinrenta)
+        values (#{idcli}, #{iditem},
+                #{fechaini,typeHandler=edu.unisabana.dyas.sampleprj.dao.mybatis.typehandlers.SqlDateAsTextTypeHandler},
+                #{fechafin,typeHandler=edu.unisabana.dyas.sampleprj.dao.mybatis.typehandlers.SqlDateAsTextTypeHandler})
+    </insert>
+
+</mapper>
