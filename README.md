@@ -167,6 +167,3 @@ En este taller se utilizará un 'framework' de persistencia. La base de datos qu
     
     Verifique el funcionamiento haciendo una consulta a través del 'mapper' desde MyBatisExample.
 
-## Parte III (Opcional)
-
-Haga un “refactor” de su aplicación de dibujo trabajada en el Taller de MVC, para generar la opción de guardar el estado en una base de datos local y que a través del uso del patrón DAO, puedan extraer la información para cargar las líneas dibujadas. (Se pueden tener líneas precargadas de ejemplo).
